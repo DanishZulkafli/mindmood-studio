@@ -1,6 +1,6 @@
-# MindMood Studio
+# MindMood Studio Pro
 
-MindMood Studio is an interactive mood journal and self-care tracker that helps users log emotions, track mood patterns, receive AI-style wellness suggestions, and export their journal data.
+MindMood Studio Pro is an interactive mood journal and self-care tracker that helps users log emotions, track mood patterns, monitor stress and energy, record sleep and hydration, identify triggers, and receive AI-style wellness suggestions.
 
 This project is built using HTML, CSS, JavaScript, and LocalStorage. It can be deployed directly using GitHub Pages without GitHub Actions.
 
@@ -12,16 +12,32 @@ Live project: https://danishzulkafli.github.io/mindmood-studio/
 
 - Mood journal entry
 - Mood score tracking
+- Energy level tracking
+- Stress level tracking
+- Sleep hours tracking
+- Water intake tracking
+- Gratitude note
+- Mood trigger logging
 - Self-care activity checklist
 - AI-style wellness recommendation
 - Mood dashboard
+- Weekly mood average
+- Best mood score
+- Current journaling streak
+- Wellness score calculation
+- Average sleep tracking
+- Mood trend chart
 - Mood breakdown chart
-- Mood history
-- Search notes
+- Trigger breakdown
+- Self-care breakdown
+- Search notes and triggers
 - Filter by mood
+- Filter by score range
 - Delete entry
 - Load demo data
 - Export journal as CSV
+- Export journal as JSON
+- Print journal report
 - Reset data
 - LocalStorage persistence
 - Responsive unique interface
@@ -37,7 +53,7 @@ Live project: https://danishzulkafli.github.io/mindmood-studio/
 
 ## Purpose
 
-This project was created as a creative and meaningful wellness-focused portfolio project. It helps users reflect on their emotions and build self-awareness through simple daily mood tracking.
+This project was created as a creative and meaningful wellness-focused portfolio project. It helps users reflect on their emotions, build self-awareness, and understand patterns that may affect their mood, stress, sleep, and energy.
 
 ## Important Note
 
@@ -53,6 +69,9 @@ This app is for personal reflection and wellness tracking only. It is not a medi
 - Theme customization
 - Export as PDF
 - Password-protected journal mode
+- Mood goal tracking
+- Breathing timer
+- Habit reminder system
 
 ## Author
 
