@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>MindMood Studio</title>
+  <title>MindMood Studio Pro</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -12,15 +12,17 @@
     <section class="hero">
       <div>
         <span class="eyebrow">Interactive Wellness Project</span>
-        <h1>MindMood Studio</h1>
+        <h1>MindMood Studio Pro</h1>
         <p>
-          Track your mood, write short reflections, log self-care activities,
-          and receive AI-style wellbeing suggestions based on your emotional pattern.
+          Track your mood, stress, energy, sleep, triggers, gratitude, and self-care habits.
+          Get AI-style wellness insights and understand your emotional patterns over time.
         </p>
 
         <div class="hero-actions">
           <button onclick="scrollToJournal()">Add Mood Entry</button>
+          <button class="ghost" onclick="loadDemoData()">Load Demo Data</button>
           <button class="ghost" onclick="exportCSV()">Export CSV</button>
+          <button class="ghost" onclick="exportJSON()">Export JSON</button>
           <button class="danger" onclick="resetData()">Reset Data</button>
         </div>
       </div>
@@ -29,6 +31,9 @@
         <span>Today’s Mood</span>
         <h2 id="latestMood">Not logged</h2>
         <p id="latestMoodScore">Score: 0/10</p>
+        <div class="mini-progress">
+          <div id="latestMoodBar"></div>
+        </div>
       </div>
     </section>
 
@@ -44,6 +49,11 @@
       </div>
 
       <div class="stat-card">
+        <span>Weekly Average</span>
+        <strong id="weeklyAverage">0/10</strong>
+      </div>
+
+      <div class="stat-card">
         <span>Best Mood</span>
         <strong id="bestMood">0/10</strong>
       </div>
@@ -51,6 +61,21 @@
       <div class="stat-card">
         <span>Self-Care Actions</span>
         <strong id="selfCareCount">0</strong>
+      </div>
+
+      <div class="stat-card">
+        <span>Current Streak</span>
+        <strong id="currentStreak">0 days</strong>
+      </div>
+
+      <div class="stat-card">
+        <span>Average Sleep</span>
+        <strong id="averageSleep">0h</strong>
+      </div>
+
+      <div class="stat-card">
+        <span>Wellness Score</span>
+        <strong id="wellnessScore">0%</strong>
       </div>
     </section>
 
@@ -63,19 +88,54 @@
           <option>Happy</option>
           <option>Calm</option>
           <option>Motivated</option>
+          <option>Grateful</option>
+          <option>Focused</option>
           <option>Tired</option>
           <option>Stressed</option>
           <option>Anxious</option>
           <option>Sad</option>
           <option>Angry</option>
+          <option>Overwhelmed</option>
         </select>
 
         <label for="score">Mood Score</label>
-        <input id="score" type="range" min="1" max="10" value="5" oninput="updateScoreLabel()" />
-        <div class="score-preview">Current score: <strong id="scoreLabel">5</strong>/10</div>
+        <input id="score" type="range" min="1" max="10" value="5" oninput="updateLabels()" />
+        <div class="score-preview">Mood score: <strong id="scoreLabel">5</strong>/10</div>
+
+        <div class="mini-grid">
+          <div>
+            <label for="energy">Energy Level</label>
+            <input id="energy" type="range" min="1" max="10" value="5" oninput="updateLabels()" />
+            <div class="score-preview">Energy: <strong id="energyLabel">5</strong>/10</div>
+          </div>
+
+          <div>
+            <label for="stress">Stress Level</label>
+            <input id="stress" type="range" min="1" max="10" value="5" oninput="updateLabels()" />
+            <div class="score-preview">Stress: <strong id="stressLabel">5</strong>/10</div>
+          </div>
+        </div>
+
+        <div class="mini-grid">
+          <div>
+            <label for="sleep">Sleep Hours</label>
+            <input id="sleep" type="number" min="0" max="24" step="0.5" value="7" />
+          </div>
+
+          <div>
+            <label for="water">Water Cups</label>
+            <input id="water" type="number" min="0" max="20" value="5" />
+          </div>
+        </div>
 
         <label for="note">Reflection Note</label>
         <textarea id="note" placeholder="Write what happened today, how you feel, or what you learned..."></textarea>
+
+        <label for="gratitude">Gratitude Note</label>
+        <textarea id="gratitude" placeholder="Example: I am grateful for completing my task today..."></textarea>
+
+        <label for="triggers">Mood Triggers</label>
+        <input id="triggers" type="text" placeholder="Example: work, family, sleep, study, traffic" />
 
         <label>Self-Care Activities</label>
         <div class="check-grid">
@@ -85,10 +145,12 @@
           <label><input type="checkbox" value="Talked to someone" /> Talk</label>
           <label><input type="checkbox" value="Reduced screen time" /> Less screen</label>
           <label><input type="checkbox" value="Practiced gratitude" /> Gratitude</label>
+          <label><input type="checkbox" value="Completed priority task" /> Priority task</label>
+          <label><input type="checkbox" value="Took a mindful break" /> Mindful break</label>
         </div>
 
         <button onclick="addEntry()">Save Mood Entry</button>
-        <button class="secondary" onclick="loadDemoData()">Load Demo Data</button>
+        <button class="secondary" onclick="printJournal()">Print Report</button>
       </div>
 
       <div class="panel">
@@ -101,9 +163,35 @@
           </p>
         </div>
 
+        <div class="notice-box">
+          <strong>Important note:</strong>
+          This app is for personal reflection only. It is not a medical or mental health diagnosis tool.
+        </div>
+
+        <h3>Mood Trend</h3>
+        <div id="trendChart" class="trend-chart">
+          <p class="muted">No trend data yet.</p>
+        </div>
+
         <h3>Mood Breakdown</h3>
         <div id="moodBreakdown" class="breakdown">
           <p class="muted">No mood data yet.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="layout second">
+      <div class="panel">
+        <h2>Trigger Breakdown</h2>
+        <div id="triggerBreakdown">
+          <p class="muted">No trigger data yet.</p>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>Self-Care Breakdown</h2>
+        <div id="activityBreakdown">
+          <p class="muted">No self-care data yet.</p>
         </div>
       </div>
     </section>
@@ -116,10 +204,17 @@
         </div>
 
         <div class="filters">
-          <input id="searchInput" type="text" placeholder="Search notes..." oninput="renderApp()" />
+          <input id="searchInput" type="text" placeholder="Search notes, triggers..." oninput="renderApp()" />
 
           <select id="filterMood" onchange="renderApp()">
             <option>All</option>
+          </select>
+
+          <select id="filterScore" onchange="renderApp()">
+            <option>All Scores</option>
+            <option>High 8-10</option>
+            <option>Medium 5-7</option>
+            <option>Low 1-4</option>
           </select>
         </div>
       </div>
